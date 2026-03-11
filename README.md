@@ -158,7 +158,7 @@ You may adjust based on your focus area.
 # Submission Instructions
 
 1. Fork this repository into your own Bitbucket account.  
-2. Set the repository visibility to **Private** and invite the hiring team as a collaborator.  
+2. Set the repository visibility to **Private** and invite ashtonz@havence.com.sg as a collaborator.  
 3. Create a branch:
 
 submission/<your-name>

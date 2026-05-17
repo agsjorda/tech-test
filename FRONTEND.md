@@ -110,6 +110,7 @@ and **the component with data fetching is a client component** (marked with `'us
 Next.js 14 has two kinds of components. This distinction matters.
 
 ### Server Components (default)
+
 - Run on the server (or at build time)
 - Cannot use `useState`, `useEffect`, or browser APIs (no `window`, `localStorage`)
 - Cannot use TanStack Query hooks
@@ -126,6 +127,7 @@ export default function TasksPage() {
 ```
 
 ### Client Components
+
 - Run in the browser
 - Can use `useState`, `useEffect`, hooks, `localStorage`, event handlers
 - Must have `'use client'` at the very top of the file
@@ -149,6 +151,7 @@ React components go through three lifecycle phases: **mount**, **update**, and *
 In modern React (hooks), these are handled by `useState` and `useEffect`.
 
 ### Mount
+
 Happens when a component first appears on screen.
 
 - TanStack Query's `useQuery` fires its `queryFn` (the API call) on mount
@@ -156,9 +159,11 @@ Happens when a component first appears on screen.
 - The component renders with `tasks = []` (the default) then re-renders with real data
 
 ### Update
+
 Happens when state or props change, causing a re-render.
 
 Examples in this app:
+
 - User clicks "Pending" filter → `statusFilter` state changes → `useTasks('pending')` is called →
   TanStack Query fetches with `?status=pending` → component re-renders with filtered tasks
 - User marks a task complete → `useUpdateTask` mutation fires → on success,
@@ -166,6 +171,7 @@ Examples in this app:
   component re-renders with updated task data
 
 ### Unmount
+
 Happens when a component leaves the screen (e.g. navigating away).
 
 - TanStack Query keeps the data in its cache for `staleTime` (30 seconds in this app)
@@ -200,6 +206,7 @@ from **client state** (UI state like "which filter is active", managed by `useSt
 ### The Core Concepts
 
 #### queryKey — the cache identifier
+
 Every `useQuery` call has a `queryKey`. Think of it like a cache key in a database.
 
 ```ts
@@ -213,6 +220,7 @@ If two components on the same page call `useTasks('pending')`, they share one ca
 and make only one API request — not two.
 
 #### queryFn — the fetcher
+
 The async function that actually calls the API. TanStack Query calls this for you
 and manages the Promise — you never write `.then()` or `.catch()` in the component.
 
@@ -221,6 +229,7 @@ queryFn: () => api.get('/tasks', { params: { status: 'pending' } }).then(r => r.
 ```
 
 #### isLoading, isError, data — the state flags
+
 TanStack Query gives you these automatically. No `useState(false)` / `useState(null)` needed.
 
 ```tsx
@@ -267,7 +276,7 @@ in "All" until the user refreshed the page.
 
 ### The cache lifecycle
 
-```
+```text
 First visit to /tasks
     → no cache entry → queryFn fires → data stored in cache
     → marked "fresh" for 30 seconds (staleTime)
@@ -291,7 +300,7 @@ Task created / updated / deleted
 
 ### Login
 
-```
+```text
 1. User submits LoginForm
 2. Zod validates email + password (client-side, instant)
 3. If invalid → show field errors, stop here
@@ -317,13 +326,13 @@ cookie on login to enable server-side route protection.
 
 ### Logout
 
-```
+```text
 1. User clicks "Sign out"
 2. logout.mutate() → POST /api/auth/logout (tells Laravel to delete the token from DB)
 3. onSettled (runs whether success or failure):
-       clearToken() → removes from localStorage + expires cookie
-       queryClient.clear() → wipes all cached data (so next user sees nothing)
-       router.push('/login')
+    clearToken() → removes from localStorage + expires cookie
+    queryClient.clear() → wipes all cached data (so next user sees nothing)
+    router.push('/login')
 ```
 
 `onSettled` (not `onSuccess`) is used here so the user is always logged out locally
@@ -367,6 +376,7 @@ export const config = {
 Both forms use **React Hook Form** + **Zod** together.
 
 ### Without RHF + Zod (the old way)
+
 ```tsx
 // Managing form state manually — gets messy fast
 const [email, setEmail] = useState('');
@@ -379,6 +389,7 @@ function handleSubmit() {
 ```
 
 ### With RHF + Zod (our way)
+
 ```tsx
 // RHF tracks all field values internally — no useState per field
 const { register, handleSubmit, formState: { errors } } = useForm({
@@ -472,63 +483,80 @@ of `data`** — no casting, no checking for undefined.
 ## File-by-File Walkthrough
 
 ### `src/types/index.ts`
+
 TypeScript interfaces that mirror the JSON the Laravel API returns. Every API response
 is typed here so TypeScript can catch mismatches between what we expect and what we get.
 
 ### `src/lib/api.ts`
+
 A pre-configured Axios instance. Two interceptors are attached:
+
 - **Request**: reads the token from `localStorage`, adds `Authorization: Bearer <token>`
 - **Response**: if the server returns 401, clears the token and redirects to `/login`
 
 All components import `api` from here — there is only one Axios instance in the app.
 
 ### `src/lib/schemas.ts`
+
 Zod schemas for login, register, and task creation. Schemas serve two purposes:
+
 1. Runtime validation (Zod checks the data)
 2. TypeScript types (inferred via `z.infer<typeof schema>`) — no duplicate interface needed
 
 ### `src/app/providers.tsx`
+
 Wraps the entire app with `QueryClientProvider`. The `QueryClient` (the TanStack Query
 store/cache) is created here once and shared to every component via React Context.
 Must be a client component because `QueryClientProvider` uses React Context under the hood.
 
 ### `src/middleware.ts`
+
 Runs on the Edge runtime before each request. Reads the `token` cookie and redirects:
+
 - Unauthenticated user → `/tasks` → redirects to `/login`
 - Authenticated user → `/login` or `/register` → redirects to `/tasks`
 
 ### `src/hooks/useAuth.ts`
+
 Three mutations: `useLogin`, `useRegister`, `useLogout`.
+
 - Saves/clears the token in both `localStorage` and a cookie
 - Navigates using `useRouter` on success/settled
 
 ### `src/hooks/useTasks.ts`
+
 All task CRUD operations as TanStack Query hooks:
+
 - `useTasks(status?)` — `useQuery` for reading; per-filter cache entries
 - `useCreateTask` / `useUpdateTask` / `useDeleteTask` — `useMutation` for writes;
   all call `invalidateQueries(['tasks'])` on success to keep the list fresh
 
 ### `src/components/tasks/TaskList.tsx`
+
 The main page component for `/tasks`. Owns `statusFilter` state (the current filter).
 Passes it to `TaskFilters` (to know which button to highlight) and to `useTasks`
 (to fetch the right data). Renders different UI based on `isLoading` / `isError` / empty state.
 
 ### `src/components/tasks/TaskCard.tsx`
+
 A single task card. Calls `useUpdateTask` and `useDeleteTask` directly — it doesn't
 need the parent to pass callbacks down. After each mutation, TanStack Query's cache
 invalidation causes `TaskList` to refetch and re-render automatically.
 
 ### `src/components/tasks/TaskFilters.tsx`
+
 A "controlled component" — it has no internal state. The parent (`TaskList`) owns the
 active filter and passes it in; `TaskFilters` just calls `onChange` when a button is clicked.
 This is called "lifting state up": state lives in the lowest common ancestor that needs it.
 
 ### `src/components/tasks/CreateTaskForm.tsx`
+
 Uses React Hook Form + Zod for the new-task form. On success the mutation receives
 an `onSuccess` callback inline (not in the hook) so it can call `router.push('/tasks')`
 from within the component where the router is available.
 
 ### `src/components/auth/LoginForm.tsx` / `RegisterForm.tsx`
+
 Standard RHF + Zod forms. Both extract the API error from `login.error` / `register_.error`
 (which is typed as `Error | null`) by narrowing it to the Axios response shape
 (`'response' in error`) before reading `error.response.data.message`.

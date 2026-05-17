@@ -40,6 +40,9 @@ Thumbs.db
 *.exe
 *.war
 
+# Claude Code local settings
+.claude/settings.local.json
+
 # Large media files
 *.mp4
 *.tiff

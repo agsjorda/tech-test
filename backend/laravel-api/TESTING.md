@@ -8,7 +8,40 @@ This guide covers two ways to test the backend:
 
 ## Prerequisites
 
-Make sure the server is set up before testing:
+### PHP path setup
+
+PHP is installed at `C:\tmp\php\php.exe` and is not on the system PATH by default.
+
+**If you are using PowerShell**, use the full path:
+
+```powershell
+C:\tmp\php\php.exe artisan serve
+```
+
+**If you are using bash (Git Bash)**, use forward slashes:
+
+```bash
+/c/tmp/php/php.exe artisan serve
+```
+
+To avoid typing the full path every time, add PHP to your PATH for the current bash session:
+
+```bash
+export PATH="/c/tmp/php:$PATH"
+```
+
+To make it permanent (every new bash session), add it to `~/.bashrc`:
+
+```bash
+echo 'export PATH="/c/tmp/php:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+After that, all `php artisan ...` commands below will work without the full path.
+
+---
+
+### Server setup
 
 ```bash
 cd backend/laravel-api

@@ -1,246 +1,161 @@
-# Full-Stack / Partial Technical Assignment  
-**Stack:** Laravel + Next.js + React Native  
+# Task Management System
 
-## Overview
-
-We are evaluating candidates for different roles:
-
-- **Full-stack**: backend + frontend + mobile  
-- **Backend**: Laravel API only  
-- **Frontend**: Next.js web only  
-- **Mobile**: React Native only  
-
-The goal is to **demonstrate your skills**. You **do not need to complete everything** — focus on the areas relevant to your expertise.
-
-**Expected completion time:** 3–4 hours (do not spend more than 5 hours).  
+A full-stack task management application built with **Laravel 11** (backend REST API), **Next.js 14** (web frontend), and **React Native / Expo** (mobile). Users can register, log in, and manage their personal tasks — create, view, filter, complete, and delete.
 
 ---
 
-# Assignment
+## Setup Instructions
 
-You may implement all or a subset of the following:
+### Backend (Laravel API)
 
-## Task Management System (Optional Full Stack)
+**Requirements:** PHP 8.3+, Composer
 
-Users should be able to:
+```bash
+cd backend/laravel-api
 
-- Create tasks
-- View tasks
-- Mark tasks as completed
-- Delete tasks
-- Filter tasks by status
+# Install dependencies
+composer install
 
-**Task fields:**
-```
- id
- title
- description
- status (pending / completed)
- priority (low / medium / high)
- created_at
- updated_at
-```
----
+# Copy and configure environment
+cp .env.example .env
+php artisan key:generate
 
-# Backend Requirements (Laravel) – Optional
+# Run database migrations (creates SQLite file automatically)
+php artisan migrate
 
-If you are applying for **backend or full-stack**, implement a REST API.
-
-### Required Endpoints
-```
- POST /api/tasks
- GET /api/tasks
- PUT /api/tasks/{id}
- DELETE /api/tasks/{id}
+# Start the development server
+php artisan serve
+# → API available at http://localhost:8000
 ```
 
-### Requirements
+**Run the test suite:**
 
-- Use migrations  
-- Use request validation  
-- Use Eloquent models  
-- Return JSON responses  
-- Implement filtering by status  
-
-Example:
-GET /api/tasks?status=pending
-
-**Edge Case Requirement:** Prevent duplicate tasks with the same title within **10 seconds**.
-
-**Bonus (Optional):** Pagination, Unit tests, Repository/Service pattern.
-
----
-
-# Web Frontend Requirements (Next.js) – Optional
-
-If you are applying for **frontend or full-stack**, implement a web interface.
-
-### Pages
-```
- /tasks
- /tasks/create
-```
-### Features
-
-- Display tasks  
-- Filter by status  
-- Mark tasks completed  
-- Delete tasks  
-- Create new tasks  
-- Basic form validation  
-
-**Requirements**
-
-- Fetch data from the API  
-- Handle loading & errors  
-- Clean component structure  
-
-**Bonus (Optional):** State management (TanStack Query), advanced form validation.
----
-
-# Mobile Requirements (React Native) – Optional
-
-If you are applying for **mobile or full-stack**, implement a mobile screen.
-
-### Screen
-TaskListScreen
-
-### Features
-
-- Fetch tasks from API  
-- Display list  
-- Mark task completed  
-- Pull-to-refresh  
-- Handle loading & errors  
-- Clean component structure  
-
-**Bonus (Optional):** Offline support, TypeScript, deploy via Expo/TestFlight/APK.
-
----
-
-# Environment Configuration
-
-All implementations should use **environment variables**.  
-
-Include a file:
-
-.env.example
-
-
-# Example variables:
-```
-APP_ENV
-APP_URL
-DB_HOST
-DB_DATABASE
-DB_USERNAME
-DB_PASSWORD
-API_URL
-```
----
-
-# Repository Structure (Suggested)
-```
-project-root
-├ backend
-│ └ laravel-api
-├ frontend
-│ └ nextjs-app
-├ mobile
-│ └ react-native-app
-└ README.md
+```bash
+php artisan test
+# 21 tests, 56 assertions — all passing
 ```
 
-You may adjust based on your focus area.
+See [backend/laravel-api/TESTING.md](backend/laravel-api/TESTING.md) for full manual and automated testing instructions including curl and Postman examples.
 
 ---
 
-# Submission Instructions
+### Frontend (Next.js)
 
-1. Fork this repository into your own Bitbucket account.  
-2. Set the repository visibility to **Private** and invite ashtonz@havence.com.sg as a collaborator.  
-3. Create a branch:
+> Coming soon
 
-submission/<your-name>
-
-Example:
-solution/john-jane
-
-
-4. Commit your work progressively.  
-5. Submit a Pull Request to `main`.  
-6. Include your README updates with instructions.
+```bash
+cd frontend/nextjs-app
+npm install
+cp .env.local.example .env.local
+npm run dev
+# → App available at http://localhost:3000
+```
 
 ---
 
-# Commit Guidelines
+### Mobile (React Native / Expo)
 
-- Commit **progressively**, not in a single commit  
-- Example of good commits:
+> Coming soon
 
-initial laravel api setup
-add task migration and model
-implement api endpoints
-add nextjs task list page
-add react native task screen
-
-
----
-
-# Required README Updates
-
-Please update this README with the following sections:
-
-- **Setup Instructions** – How to run backend, frontend, and mobile app  
-- **Assumptions Made** – Describe any assumptions  
-- **Libraries Used** – List any extra libraries or frameworks  
-- **Architecture Decisions** – Explain your design choices  
-- **What You Would Improve With More Time** – Explain potential improvements  
+```bash
+cd mobile/react-native-app
+npm install
+npx expo start
+# → Scan the QR code with the Expo Go app
+```
 
 ---
 
-# Bonus (Optional)
+## Assumptions Made
 
-### Deployment
-
-Deploy the working application (frontend, backend, or both). Include URLs in your README.
-
-### Mobile Build
-
-Provide APK, TestFlight, or Expo link.
-
-### Docker
-
-Include `docker-compose.yml` for local development.
-
-### Automated Tests
-
-Include at least **one automated test**.
+- **Authentication was added** — email/password auth via Laravel Sanctum was not in the original brief but was added to make the app production-realistic and to properly scope tasks per user.
+- **SQLite was chosen over MySQL/PostgreSQL** for zero-configuration local development. The schema is fully compatible with PostgreSQL for a production migration.
+- **Tasks are scoped per user** — a user can only see, edit, and delete their own tasks. This was not explicitly stated but is the only secure interpretation.
+- **The 10-second duplicate prevention** is enforced server-side only. The frontend shows the error message returned by the API.
+- **Token storage in localStorage** (frontend) is acceptable for a development assignment. A production app would use httpOnly cookies.
+- **No email verification** is implemented — registration grants immediate access.
 
 ---
 
-# Evaluation Criteria
+## Libraries Used
 
-- **Backend** – Laravel best practices, validation, API structure, edge case handling  
-- **Frontend** – Component structure, data fetching, error handling  
-- **Mobile** – React Native patterns, clean code  
-- **Overall** – Project structure, code quality, documentation, commit history  
+### Backend
+
+| Library | Version | Purpose |
+| ------- | ------- | ------- |
+| Laravel | 11 | PHP framework — routing, ORM, validation, middleware |
+| Laravel Sanctum | 4.x | Token-based API authentication |
+| PHPUnit | 11 | Automated testing (ships with Laravel) |
+
+### Frontend
+
+| Library | Version | Purpose |
+| ------- | ------- | ------- |
+| Next.js | 14 | React framework with App Router |
+| TanStack Query | 5 | Server state management and data fetching |
+| React Hook Form | 7 | Form state management |
+| Zod | 3 | Schema validation (mirrors backend rules) |
+| Axios | 1 | HTTP client with auth interceptor |
+| Tailwind CSS | 3 | Utility-first styling |
+
+### Mobile
+
+| Library | Version | Purpose |
+| ------- | ------- | ------- |
+| Expo SDK | 51 | Managed React Native workflow |
+| React Navigation | 6 | Stack-based navigation (auth vs app screens) |
+| TanStack Query | 5 | Same data-fetching pattern as the web app |
+| Axios | 1 | HTTP client |
+| Expo SecureStore | — | Encrypted token storage on device |
 
 ---
 
-# Technical Review
+## Architecture Decisions
 
-After submission, selected candidates will be invited to a **30–45 minute code review**.  
+### Repository / Service Pattern (Backend)
 
-During this session, you may be asked to:
+The backend is structured in three layers beyond the controller:
 
-- Explain your architecture decisions  
-- Walk through your code  
-- Add a small feature live  
+```text
+Controller → Service → Repository → Database
+```
+
+- **Controller** — handles HTTP only (reads request, returns response). No business logic.
+- **Service** (`TaskService`) — owns business rules. The 10-second duplicate prevention lives here, inside a `DB::transaction` to prevent race conditions between the check and the insert.
+- **Repository** (`TaskRepository`) — the only layer that writes Eloquent queries. Swappable via `TaskRepositoryInterface`, which is what makes unit testing possible without a real database.
+- **AppServiceProvider** — binds the interface to the concrete class via Laravel's service container.
+
+### Sanctum Token-Based Auth
+
+Chosen over session/cookie auth because:
+
+- Tokens work identically for the web frontend and the mobile app
+- No CSRF token setup needed
+- Simpler CORS configuration
+
+### SQLite for Development
+
+Zero configuration — no database server to install or run. The single file (`database/database.sqlite`) is created automatically on first migrate. The schema is standard SQL and will work with PostgreSQL in production with no changes.
+
+### TanStack Query on Both Web and Mobile
+
+The same data-fetching pattern (`useTasks`, `useAuth` hooks) is used on both platforms. This consistency means less mental overhead when switching between codebases and the cache-per-filter pattern (`queryKey: ['tasks', status]`) works identically.
+
+### User-Scoped Queries
+
+Every database query in `TaskRepository` includes `where('user_id', $userId)`. This means even if a user somehow guesses another task's ID, the query returns 404 — not 403 — which avoids leaking whether the resource exists.
 
 ---
 
-# Notes
+## What You Would Improve With More Time
 
-- You **do not need to complete everything**. Focus on your area of expertise.  
-- You **may use libraries, documentation**, but you must **understand and explain your code** during the interview.
+- **Move to PostgreSQL** for production — better performance, full-text search, and proper enum types.
+- **Add email verification** on registration before granting access.
+- **Replace localStorage with httpOnly cookies** on the frontend for more secure token storage.
+- **Optimistic UI updates** — mark a task complete instantly in the UI before the API responds, with a rollback on failure.
+- **Offline support on mobile** — use TanStack Query's `persistQueryClient` with AsyncStorage so tasks load without a network connection.
+- **Pagination UI** on the frontend — the API already supports it (`?page=2`), but the frontend currently loads page 1 only.
+- **Task due dates** — an obvious missing field for a real task manager.
+- **End-to-end tests** with Playwright (web) and Detox (mobile) to complement the existing PHPUnit suite.
+- **CI/CD pipeline** — GitHub Actions to run `php artisan test` on every pull request.
+- **Docker Compose** for a fully reproducible local environment across team members.

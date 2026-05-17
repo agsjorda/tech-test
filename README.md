@@ -2,6 +2,19 @@
 
 A full-stack task management application built with **Laravel 11** (backend REST API), **Next.js 14** (web frontend), and **React Native / Expo** (mobile). Users can register, log in, and manage their personal tasks — create, view, filter, complete, and delete.
 
+This repository is a **lightweight monorepo** — one git repository containing three independent applications, each with its own dependencies and run commands.
+
+```text
+tech-test/
+├── backend/
+│   └── laravel-api/        # Laravel 11 REST API
+├── frontend/
+│   └── nextjs-app/         # Next.js 14 web app
+├── mobile/
+│   └── react-native-app/   # Expo / React Native app
+└── README.md
+```
+
 ---
 
 ## Setup Instructions

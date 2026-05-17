@@ -1,5 +1,19 @@
 'use client';
 
+// ─── RegisterForm ─────────────────────────────────────────────────────────────
+// Four fields: name, email, password, password_confirmation.
+// The Zod schema (registerSchema) uses .refine() to check the two password
+// fields match before the form is submitted — this gives instant browser-side
+// feedback without an API round-trip.
+//
+// Flow:
+//   1. User fills in all fields
+//   2. User clicks "Create account"
+//   3. zodResolver runs registerSchema — shows errors if invalid, stops here
+//   4. onSubmit fires → register_.mutate(data) → POST /auth/register
+//   5a. Success: useRegister saves token + redirects to /tasks
+//   5b. Error: apiError is displayed (e.g. "The email has already been taken.")
+
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
@@ -7,6 +21,7 @@ import { registerSchema, type RegisterInput } from '@/lib/schemas';
 import { useRegister } from '@/hooks/useAuth';
 
 export function RegisterForm() {
+  // Renamed to register_ to avoid clashing with RHF's `register` function below
   const register_ = useRegister();
 
   const {
@@ -19,6 +34,8 @@ export function RegisterForm() {
 
   const onSubmit = (data: RegisterInput) => register_.mutate(data);
 
+  // The register endpoint can return field-level validation errors (errors key)
+  // or a top-level message — we handle both shapes here
   const apiError =
     register_.error && 'response' in register_.error
       ? (register_.error as { response?: { data?: { errors?: Record<string, string[]>; message?: string } } }).response?.data
@@ -29,6 +46,7 @@ export function RegisterForm() {
       <div className="w-full max-w-md bg-white rounded-xl shadow-sm border border-gray-200 p-8">
         <h1 className="text-2xl font-bold text-gray-900 mb-6">Create account</h1>
 
+        {/* Backend error banner — e.g. "The email has already been taken." */}
         {apiError?.message && (
           <div className="mb-4 rounded-md bg-red-50 border border-red-200 p-3">
             <p className="text-sm text-red-700">{apiError.message}</p>
@@ -36,6 +54,8 @@ export function RegisterForm() {
         )}
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+
+          {/* ── Name ───────────────────────────────────────────────────── */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Name
@@ -52,6 +72,7 @@ export function RegisterForm() {
             )}
           </div>
 
+          {/* ── Email ──────────────────────────────────────────────────── */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Email
@@ -68,6 +89,7 @@ export function RegisterForm() {
             )}
           </div>
 
+          {/* ── Password ───────────────────────────────────────────────── */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Password
@@ -84,6 +106,9 @@ export function RegisterForm() {
             )}
           </div>
 
+          {/* ── Confirm password ────────────────────────────────────────── */}
+          {/* This field is validated cross-field by the .refine() in registerSchema —
+              if it doesn't match the password field, errors.password_confirmation is set */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Confirm password
@@ -102,6 +127,7 @@ export function RegisterForm() {
             )}
           </div>
 
+          {/* ── Submit ─────────────────────────────────────────────────── */}
           <button
             type="submit"
             disabled={register_.isPending}

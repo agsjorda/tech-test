@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C \"d:\\\\SoftwareDevelopment\\\\exam\\\\tech-test\" status)",
+      "PowerShell(docker --version)",
+      "PowerShell(node --version)",
+      "PowerShell(npm --version)",
+      "PowerShell(choco --version 2>$null)",
+      "PowerShell(scoop --version 2>$null)",
+      "PowerShell(winget --version 2>$null)",
+      "PowerShell(Get-PSDrive -PSProvider FileSystem | ForEach-Object { Get-ChildItem \"$\\($_.Root\\)\" -Directory -ErrorAction SilentlyContinue } | Select-Object FullName | Select-Object -First 30)",
+      "PowerShell($php = \"C:\\\\tmp\\\\php\\\\php.exe\"; & $php -m 2>$null | Select-String \"pdo_sqlite|sqlite3|mbstring|openssl|zip|fileinfo|sodium|curl\" | Select-Object Line)",
+      "PowerShell($php = \"C:\\\\tmp\\\\php\\\\php.exe\"; & $php -m 2>$null)"
+    ]
+  }
+}

@@ -74,7 +74,7 @@ export function CreateTaskForm() {
               {...register('title')}
               type="text"
               placeholder="e.g. Write unit tests"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             {/* errors.title is set by Zod when the field is invalid */}
             {errors.title && (
@@ -91,7 +91,7 @@ export function CreateTaskForm() {
               {...register('description')}
               rows={3}
               placeholder="Optional details…"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-black focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
             />
             {errors.description && (
               <p className="mt-1 text-xs text-red-600">{errors.description.message}</p>
@@ -106,7 +106,7 @@ export function CreateTaskForm() {
             {/* A <select> registered with RHF works the same as an <input> */}
             <select
               {...register('priority')}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-black focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
             >
               <option value="low">Low</option>
               <option value="medium">Medium</option>

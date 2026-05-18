@@ -64,7 +64,7 @@ export function RegisterForm() {
               {...register('name')}
               type="text"
               autoComplete="name"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="John Doe"
             />
             {errors.name && (
@@ -81,7 +81,7 @@ export function RegisterForm() {
               {...register('email')}
               type="email"
               autoComplete="email"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="you@example.com"
             />
             {errors.email && (
@@ -98,7 +98,7 @@ export function RegisterForm() {
               {...register('password')}
               type="password"
               autoComplete="new-password"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="••••••••"
             />
             {errors.password && (
@@ -117,7 +117,7 @@ export function RegisterForm() {
               {...register('password_confirmation')}
               type="password"
               autoComplete="new-password"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="••••••••"
             />
             {errors.password_confirmation && (

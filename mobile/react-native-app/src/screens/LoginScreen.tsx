@@ -27,12 +27,15 @@ export default function LoginScreen({ navigation }: Props) {
   const [password, setPassword] = useState('');
   const login = useLogin();
 
-  // Extract a readable message from the Axios error response body
-  const apiError =
-    login.error && 'response' in login.error
+  // Extract a readable message from the error.
+  // If the server replied (HTTP error): show its message.
+  // If there was no response at all (network down, wrong IP): show a generic message.
+  const apiError = login.error
+    ? 'response' in login.error
       ? (login.error as { response?: { data?: { message?: string } } })
-          .response?.data?.message
-      : null;
+          .response?.data?.message ?? 'Something went wrong.'
+      : 'Cannot reach the server. Check your connection.'
+    : null;
 
   function handleSubmit() {
     if (!email.trim() || !password.trim()) return;

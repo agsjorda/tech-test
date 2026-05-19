@@ -29,15 +29,16 @@ export default function RegisterScreen({ navigation }: Props) {
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const register = useRegister();
 
-  // Extract API error — can be a top-level message or per-field errors
-  const apiError =
-    register.error && 'response' in register.error
+  // Extract API error — server reply (HTTP error) or network failure
+  const apiError = register.error
+    ? 'response' in register.error
       ? (
           register.error as {
             response?: { data?: { message?: string; errors?: Record<string, string[]> } };
           }
         ).response?.data
-      : null;
+      : { message: 'Cannot reach the server. Check your connection.' }
+    : null;
 
   function handleSubmit() {
     if (!name.trim() || !email.trim() || !password || !passwordConfirmation) {

@@ -79,6 +79,65 @@ Install **Expo Go** from the App Store or Google Play to scan the QR code and ru
 
 ---
 
+## Testing on a Physical Device
+
+When running the mobile app on a real phone (not a simulator), the phone and your computer must be on the **same Wi-Fi network**, and you need to tell both the backend and the mobile app to use your machine's local IP address instead of `localhost`.
+
+### Step 1 — Find your local IP address
+
+**Windows (PowerShell or Command Prompt):**
+
+```bash
+ipconfig
+```
+
+Look for **IPv4 Address** under your Wi-Fi adapter — it will look like `192.168.x.x`.
+
+**Mac / Linux:**
+
+```bash
+ipconfig getifaddr en0   # Wi-Fi
+# or
+hostname -I
+```
+
+### Step 2 — Start the backend on all interfaces
+
+By default Laravel only listens on `localhost` (your own machine). Use `--host=0.0.0.0` to accept connections from other devices on the network:
+
+```bash
+# PowerShell
+C:\tmp\php\php.exe artisan serve --host=0.0.0.0 --port=8000
+
+# bash (Git Bash)
+/c/tmp/php/php.exe artisan serve --host=0.0.0.0 --port=8000
+```
+
+### Step 3 — Update the mobile `.env` file
+
+Open `mobile/react-native-app/.env` and replace `localhost` with your IP:
+
+```env
+EXPO_PUBLIC_API_URL=http://192.168.x.x:8000/api
+```
+
+Replace `192.168.x.x` with the actual IP you found in Step 1.
+
+### Step 4 — Restart Expo with cache cleared
+
+Environment variables are baked in at startup, so a full restart is required after changing `.env`:
+
+```bash
+cd mobile/react-native-app
+npx expo start --clear
+```
+
+Scan the QR code with **Expo Go** and the app will connect to your backend.
+
+> **Tip:** If login still fails after these steps, check that your firewall is not blocking port 8000. On Windows, you may need to allow PHP through Windows Defender Firewall.
+
+---
+
 ## Assumptions Made
 
 - **Authentication was added** — email/password auth via Laravel Sanctum was not in the original brief but was added to make the app production-realistic and to properly scope tasks per user.

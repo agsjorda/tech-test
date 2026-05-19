@@ -13,7 +13,7 @@
 import { useMutation } from '@tanstack/react-query';
 import * as SecureStore from 'expo-secure-store';
 import { api, setToken } from '../lib/api';
-import { notifyAuthChange } from '../navigation/AppNavigator';
+import { notifyAuthChange } from '../lib/authState';
 import type { AuthResponse } from '../types';
 
 // ─── Shared helper — saves token and switches to app stack ────────────────────

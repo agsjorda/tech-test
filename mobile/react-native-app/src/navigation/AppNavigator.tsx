@@ -15,6 +15,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as SecureStore from 'expo-secure-store';
 
 import { setToken } from '../lib/api';
+import { registerAuthSetter } from '../lib/authState';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import TaskListScreen from '../screens/TaskListScreen';
@@ -35,22 +36,14 @@ export type AppStackParamList = {
 const AuthStack = createNativeStackNavigator<AuthStackParamList>();
 const AppStack = createNativeStackNavigator<AppStackParamList>();
 
-// ─── Module-level setter — called by useAuth hooks ────────────────────────────
-// Screens import this and call it after login/register/logout so the navigator
-// re-renders without needing props or context drilling.
-let _setIsLoggedIn: ((v: boolean) => void) | null = null;
-
-export function notifyAuthChange(loggedIn: boolean) {
-  _setIsLoggedIn?.(loggedIn);
-}
-
 // ─── Navigator component ──────────────────────────────────────────────────────
 export default function AppNavigator() {
   // null = still checking SecureStore (show nothing while loading)
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
 
-  // Register the setter so useAuth can trigger a stack switch
-  _setIsLoggedIn = setIsLoggedIn;
+  // Register the setter in the neutral authState module so useAuth can trigger
+  // a stack switch without importing AppNavigator (breaks the require cycle)
+  registerAuthSetter(setIsLoggedIn);
 
   useEffect(() => {
     // Read token from encrypted storage on every app launch

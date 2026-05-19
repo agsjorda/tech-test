@@ -24,6 +24,14 @@ C:\tmp\php\php.exe artisan serve
 /c/tmp/php/php.exe artisan serve
 ```
 
+**To allow mobile devices on the same Wi-Fi network to reach the server**, bind to all interfaces:
+
+```bash
+/c/tmp/php/php.exe artisan serve --host=0.0.0.0 --port=8000
+```
+
+Then set `EXPO_PUBLIC_API_URL` in `mobile/react-native-app/.env` to your machine's local IP (e.g. `http://192.168.x.x:8000/api`) instead of `localhost`.
+
 To avoid typing the full path every time, add PHP to your PATH for the current bash session:
 
 ```bash

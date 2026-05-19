@@ -41,8 +41,6 @@ See [backend/laravel-api/TESTING.md](backend/laravel-api/TESTING.md) for full ma
 
 ### Frontend (Next.js)
 
-> Coming soon
-
 ```bash
 cd frontend/nextjs-app
 npm install
@@ -51,18 +49,33 @@ npm run dev
 # → App available at http://localhost:3000
 ```
 
+The `.env.local` file needs one value:
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8000/api
+```
+
 ---
 
 ### Mobile (React Native / Expo)
 
-> Coming soon
-
 ```bash
 cd mobile/react-native-app
 npm install
+cp .env.example .env
 npx expo start
 # → Scan the QR code with the Expo Go app
 ```
+
+The `.env` file needs one value:
+
+```env
+EXPO_PUBLIC_API_URL=http://localhost:8000/api
+```
+
+> **Note:** When testing on a physical device, replace `localhost` with your machine's local IP address (e.g. `192.168.x.x`) so the phone can reach the backend server.
+
+Install **Expo Go** from the App Store or Google Play to scan the QR code and run the app on your device.
 
 ---
 

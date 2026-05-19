@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 /*
 |--------------------------------------------------------------------------
@@ -77,6 +78,8 @@ class AuthController extends Controller
         if (! $user || ! Hash::check($request->password, $user->password)) {
             return response()->json(['message' => 'Invalid credentials.'], 401);
         }
+
+        Log::info('User logged in', ['id' => $user->id, 'email' => $user->email]);
 
         return response()->json([
             'user'  => $user,
